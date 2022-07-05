@@ -47,7 +47,7 @@ public class BookResource {
 	 * @param author
 	 * @return
 	 */
-	@GetMapping("/search-book")
+	@GetMapping("/search")
 	public List<SearchBookResponseDto> searchBook(@RequestParam(value = "title", required=true) String title, 
 			@RequestParam(value = "author", required=false) String author) {
 		HttpHeaders headers = new HttpHeaders();
@@ -89,7 +89,7 @@ public class BookResource {
 	 * @param id
 	 * @return
 	 */
-	@GetMapping("/get-book/{id}")
+	@GetMapping("/{id}")
 	public BookDto getBook(@PathVariable String id) {
 		String url = properties.getBaseUrl().concat("/").concat(id);
 		HttpHeaders headers = new HttpHeaders();
@@ -109,7 +109,7 @@ public class BookResource {
 	 * @return
 	 * @throws IOException
 	 */
-	@GetMapping("/download-book/{id}/description")
+	@GetMapping("/download/{id}/description")
 	public ResponseEntity<byte[]> downloadBookDescription(@PathVariable String id) throws IOException {
 		String url = properties.getBaseUrl().concat("/").concat(id);
 		HttpHeaders headers = new HttpHeaders();
@@ -130,7 +130,13 @@ public class BookResource {
 		return new ResponseEntity<>(description.getBytes(), headersResponse, HttpStatus.OK);
 	}
 	
-	@GetMapping("/download-book/{id}/image")
+	/**
+	 * Download book's image
+	 * @param id
+	 * @return
+	 * @throws IOException
+	 */
+	@GetMapping("/download/{id}/image")
 	public ResponseEntity<byte[]> downloadBookImage(@PathVariable String id) throws IOException {
 		String url = properties.getBaseUrl().concat("/").concat(id);
 		HttpHeaders headers = new HttpHeaders();

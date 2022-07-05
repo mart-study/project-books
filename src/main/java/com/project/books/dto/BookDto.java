@@ -19,6 +19,7 @@ public class BookDto implements Serializable {
 	private String maturityRating;
 	private String language;
 	private String previewLink;
+	private ImageLinksDto imageLinks;
 	
 	public String getTitle() {
 		return title;
@@ -38,6 +39,7 @@ public class BookDto implements Serializable {
 	public void setPublisher(String publisher) {
 		this.publisher = publisher;
 	}
+	
 	public Date getPublishedDate() {
 		return publishedDate;
 	}
@@ -91,5 +93,14 @@ public class BookDto implements Serializable {
 	}
 	public void setPreviewLink(String previewLink) {
 		this.previewLink = previewLink;
+	}
+	public ImageLinksDto getImageLinks() {
+		return imageLinks;
+	}
+	public void setImageLinks(ImageLinksDto imageLinks) {
+		this.imageLinks = imageLinks;
+	}
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 }

@@ -9,7 +9,7 @@ API URLs are listed below:
 - books/download/{book_id}/image : download book's thumbnail in jpeg format
 
 Project instructions before running the application:
-- add file : google-books.properties in classpath
-- in google-books.properties, add base-url={base url for goole books api} and api-key={your api key for credential}
+- in google-books.properties, add api-key={your api key for credential}
 
-For information about the base url and api key can be found in this link https://developers.google.com/books/docs/v1/using
+For information about api key can be found in this link https://cloud.google.com/docs/authentication/api-keys?visit_id=637927766577934480-1480192527&rd=1
+More about Google Books API : https://developers.google.com/books/docs/overview

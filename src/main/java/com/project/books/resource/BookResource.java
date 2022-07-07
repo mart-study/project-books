@@ -2,7 +2,10 @@ package com.project.books.resource;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,7 +51,7 @@ public class BookResource {
 	 * @return
 	 */
 	@GetMapping("/search")
-	public List<SearchBookResponseDto> searchBook(@RequestParam(value = "title", required=true) String title, 
+	public ResponseEntity<List<SearchBookResponseDto>> searchBook(@RequestParam(value = "title", required=true) String title, 
 			@RequestParam(value = "author", required=false) String author) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
@@ -81,7 +84,7 @@ public class BookResource {
 			dto.setPublishedDate(item.getVolumeInfo().getPublishedDate());
 			result.add(dto);
 		});
-		return result;
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
 	/**
@@ -90,7 +93,7 @@ public class BookResource {
 	 * @return
 	 */
 	@GetMapping("/{id}")
-	public BookDto getBook(@PathVariable String id) {
+	public ResponseEntity<BookDto> getBook(@PathVariable String id) {
 		String url = properties.getBaseUrl().concat("/").concat(id);
 		HttpHeaders headers = new HttpHeaders();
 		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
@@ -100,7 +103,7 @@ public class BookResource {
 		ResponseEntity<ItemDto> response = restTemplate.exchange(url, HttpMethod.GET, 
 				entity, ItemDto.class);
 		
-		return response.getBody().getVolumeInfo();
+		return new ResponseEntity<>(response.getBody().getVolumeInfo(), HttpStatus.OK);
 	}
 	
 	/**
@@ -155,10 +158,11 @@ public class BookResource {
 		headersResponse.add("content-disposition", "attachment; filename=" + 
 				book.getTitle().replaceAll("\\s+", "_").concat(".jpeg"));
 		
-		URL imageUrl = new URL(imageLinks.getThumbnail());
+		URL imageUrl = new URL(imageLinks.getThumbnail().replace("http", "https"));
 		BufferedImage image = ImageIO.read(imageUrl);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ImageIO.write(image, "jpg", baos);
+		baos.close();
 		
 		return new ResponseEntity<>(baos.toByteArray(), headersResponse, HttpStatus.OK);
 	}

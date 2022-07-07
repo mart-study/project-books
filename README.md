@@ -15,8 +15,8 @@ For information about api key can be found in this link https://cloud.google.com
 More about Google Books API : https://developers.google.com/books/docs/overview
 
 Technology used:
-Spring Boot
-Maven
-Rest API
-Rest Template
-JUnit and Mockito
+- Spring Boot
+- Maven
+- Rest API
+- Rest Template
+- JUnit and Mockito

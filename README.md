@@ -20,3 +20,4 @@ Technology used:
 - Rest API
 - Rest Template
 - JUnit and Mockito
+- MongoDB

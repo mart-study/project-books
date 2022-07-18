@@ -1,14 +1,17 @@
-package com.project.books.dto;
+package com.project.books.model;
 
-import java.io.Serializable;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-public class ItemDto implements Serializable {
-	
-	private static final long serialVersionUID = -890522263069154811L;
+
+@Document(collection="item")
+public class Item {
+
+	@Id
 	private String id;
 	private String etag;
 	private String selfLink;
-	private BookDto volumeInfo;
+	private Book volumeInfo;
 	
 	public String getId() {
 		return id;
@@ -28,18 +31,17 @@ public class ItemDto implements Serializable {
 	public void setSelfLink(String selfLink) {
 		this.selfLink = selfLink;
 	}
-	public BookDto getVolumeInfo() {
+	public Book getVolumeInfo() {
 		return volumeInfo;
 	}
-	public void setVolumeInfo(BookDto volumeInfo) {
+	public void setVolumeInfo(Book volumeInfo) {
 		this.volumeInfo = volumeInfo;
-	}
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 	
 	@Override
 	public String toString() {
-		return "ItemDto [id=" + id + ", etag=" + etag + ", selfLink=" + selfLink + ", volumeInfo=" + volumeInfo + "]";
+		return "Item [id=" + id + ", etag=" + etag + ", selfLink=" + selfLink + ", volumeInfo=" + volumeInfo + "]";
 	}
+	
+	
 }

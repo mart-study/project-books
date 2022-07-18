@@ -30,4 +30,14 @@ public class IndustryIdentifierDto implements Serializable {
 	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
 	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	@Override
+	public String toString() {
+		return "IndustryIdentifierDto [type=" + type + ", identifier=" + identifier + "]";
+	}
+	
 }

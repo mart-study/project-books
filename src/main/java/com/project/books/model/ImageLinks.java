@@ -1,10 +1,7 @@
-package com.project.books.dto;
+package com.project.books.model;
 
-import java.io.Serializable;
+public class ImageLinks {
 
-public class ImageLinksDto implements Serializable { 
-	
-	private static final long serialVersionUID = -214467084915756764L;
 	private String smallThumbnail;
 	private String thumbnail;
 	private String small;
@@ -48,13 +45,10 @@ public class ImageLinksDto implements Serializable {
 	public void setExtraLarge(String extraLarge) {
 		this.extraLarge = extraLarge;
 	}
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
 	
 	@Override
 	public String toString() {
-		return "ImageLinksDto [smallThumbnail=" + smallThumbnail + ", thumbnail=" + thumbnail + ", small=" + small
+		return "ImageLinks [smallThumbnail=" + smallThumbnail + ", thumbnail=" + thumbnail + ", small=" + small
 				+ ", medium=" + medium + ", large=" + large + ", extraLarge=" + extraLarge + "]";
 	}
 	

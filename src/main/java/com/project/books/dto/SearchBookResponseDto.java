@@ -47,4 +47,10 @@ public class SearchBookResponseDto implements Serializable {
 	public void setPublishedDate(Date publishedDate) {
 		this.publishedDate = publishedDate;
 	}
+	
+	@Override
+	public String toString() {
+		return "SearchBookResponseDto [id=" + id + ", title=" + title + ", authors=" + authors + ", publisher="
+				+ publisher + ", publishedDate=" + publishedDate + "]";
+	}
 }

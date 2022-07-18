@@ -1,25 +1,23 @@
-package com.project.books.dto;
+package com.project.books.model;
 
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class BookDto implements Serializable {
-	
-	private static final long serialVersionUID = -5008241177336901858L;
+public class Book {
+
 	private String title;
 	private List<String> authors;
 	private String publisher;
 	private Date publishedDate;
 	private String description;
-	private List<IndustryIdentifierDto> industryIdentifiers;
+	private List<IndustryIdentifier> industryIdentifiers;
 	private int pageCount;
 	private List<String> categories;
 	private float averageRating;
 	private String maturityRating;
 	private String language;
 	private String previewLink;
-	private ImageLinksDto imageLinks;
+	private ImageLinks imageLinks;
 	
 	public String getTitle() {
 		return title;
@@ -39,7 +37,6 @@ public class BookDto implements Serializable {
 	public void setPublisher(String publisher) {
 		this.publisher = publisher;
 	}
-	
 	public Date getPublishedDate() {
 		return publishedDate;
 	}
@@ -52,10 +49,10 @@ public class BookDto implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public List<IndustryIdentifierDto> getIndustryIdentifiers() {
+	public List<IndustryIdentifier> getIndustryIdentifiers() {
 		return industryIdentifiers;
 	}
-	public void setIndustryIdentifiers(List<IndustryIdentifierDto> industryIdentifiers) {
+	public void setIndustryIdentifiers(List<IndustryIdentifier> industryIdentifiers) {
 		this.industryIdentifiers = industryIdentifiers;
 	}
 	public int getPageCount() {
@@ -94,19 +91,16 @@ public class BookDto implements Serializable {
 	public void setPreviewLink(String previewLink) {
 		this.previewLink = previewLink;
 	}
-	public ImageLinksDto getImageLinks() {
+	public ImageLinks getImageLinks() {
 		return imageLinks;
 	}
-	public void setImageLinks(ImageLinksDto imageLinks) {
+	public void setImageLinks(ImageLinks imageLinks) {
 		this.imageLinks = imageLinks;
-	}
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 	
 	@Override
 	public String toString() {
-		return "BookDto [title=" + title + ", authors=" + authors + ", publisher=" + publisher + ", publishedDate="
+		return "Book [title=" + title + ", authors=" + authors + ", publisher=" + publisher + ", publishedDate="
 				+ publishedDate + ", description=" + description + ", industryIdentifiers=" + industryIdentifiers
 				+ ", pageCount=" + pageCount + ", categories=" + categories + ", averageRating=" + averageRating
 				+ ", maturityRating=" + maturityRating + ", language=" + language + ", previewLink=" + previewLink

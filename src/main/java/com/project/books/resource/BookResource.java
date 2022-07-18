@@ -2,18 +2,18 @@ package com.project.books.resource;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -34,15 +34,21 @@ import com.project.books.dto.ItemDto;
 import com.project.books.dto.SearchBookResponseDto;
 import com.project.books.dto.SearchBookResultDto;
 import com.project.books.properties.GoogleBookProperties;
+import com.project.books.service.BookService;
 
 @RestController
 public class BookResource {
+	
+	private Logger logger = LoggerFactory.getLogger(BookResource.class);
 	
 	@Autowired
 	private RestTemplate restTemplate;
 	
 	@Autowired
 	private GoogleBookProperties properties;
+	
+	@Autowired
+	private BookService bookService;
 	
 	/**
 	 * Search book by title and/or author name
@@ -84,6 +90,8 @@ public class BookResource {
 			dto.setPublishedDate(item.getVolumeInfo().getPublishedDate());
 			result.add(dto);
 		});
+		
+		logger.info("Search books with title: " + title + " and author: " + author);
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -94,16 +102,25 @@ public class BookResource {
 	 */
 	@GetMapping("/{id}")
 	public ResponseEntity<BookDto> getBook(@PathVariable String id) {
-		String url = properties.getBaseUrl().concat("/").concat(id);
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-		
-		HttpEntity<String> entity = new HttpEntity<>(headers);
-		
-		ResponseEntity<ItemDto> response = restTemplate.exchange(url, HttpMethod.GET, 
-				entity, ItemDto.class);
-		
-		return new ResponseEntity<>(response.getBody().getVolumeInfo(), HttpStatus.OK);
+		Optional<BookDto> bookOpt = bookService.getBookById(id);
+		if (bookOpt.isPresent()) {
+			logger.info("Get book by id from database: " + id);
+			return new ResponseEntity<>(bookOpt.get(), HttpStatus.OK);
+		} else {
+			String url = properties.getBaseUrl().concat("/").concat(id);
+			HttpHeaders headers = new HttpHeaders();
+			headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+			
+			HttpEntity<String> entity = new HttpEntity<>(headers);
+			
+			ResponseEntity<ItemDto> response = restTemplate.exchange(url, HttpMethod.GET, 
+					entity, ItemDto.class);
+			
+			bookOpt = bookService.saveBook(response.getBody());
+			
+			logger.info("Get book by id from google apis: " + id);
+			return new ResponseEntity<>(bookOpt.get(), HttpStatus.OK);
+		}
 	}
 	
 	/**
@@ -114,16 +131,25 @@ public class BookResource {
 	 */
 	@GetMapping("/download/{id}/description")
 	public ResponseEntity<byte[]> downloadBookDescription(@PathVariable String id) throws IOException {
-		String url = properties.getBaseUrl().concat("/").concat(id);
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		BookDto book = new BookDto();
+		Optional<BookDto> bookOpt = bookService.getBookById(id);
+		if (bookOpt.isPresent()) {
+			logger.info("Get book's description from database: " + id);
+			book = bookOpt.get();
+		} else {
+			String url = properties.getBaseUrl().concat("/").concat(id);
+			HttpHeaders headers = new HttpHeaders();
+			headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+			
+			HttpEntity<String> entity = new HttpEntity<>(headers);
+			
+			ResponseEntity<ItemDto> response = restTemplate.exchange(url, HttpMethod.GET, 
+					entity, ItemDto.class);
+			
+			logger.info("Get book's description from google apis: " + id);
+			book = response.getBody().getVolumeInfo();
+		}
 		
-		HttpEntity<String> entity = new HttpEntity<>(headers);
-		
-		ResponseEntity<ItemDto> response = restTemplate.exchange(url, HttpMethod.GET, 
-				entity, ItemDto.class);
-		
-		BookDto book = response.getBody().getVolumeInfo();
 		String description = book.getDescription().replaceAll("<br>", "\n");
 		
 		HttpHeaders headersResponse = new HttpHeaders();
@@ -141,16 +167,25 @@ public class BookResource {
 	 */
 	@GetMapping("/download/{id}/image")
 	public ResponseEntity<byte[]> downloadBookImage(@PathVariable String id) throws IOException {
-		String url = properties.getBaseUrl().concat("/").concat(id);
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+		BookDto book = new BookDto();
+		Optional<BookDto> bookOpt = bookService.getBookById(id);
+		if (bookOpt.isPresent()) {
+			logger.info("Get book's thumbnail link from database: " + id);
+			book = bookOpt.get();
+		} else {
+			String url = properties.getBaseUrl().concat("/").concat(id);
+			HttpHeaders headers = new HttpHeaders();
+			headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+			
+			HttpEntity<String> entity = new HttpEntity<>(headers);
+			
+			ResponseEntity<ItemDto> response = restTemplate.exchange(url, HttpMethod.GET, 
+					entity, ItemDto.class);
 		
-		HttpEntity<String> entity = new HttpEntity<>(headers);
+			logger.info("Get book's thumbnail from google apis: " + id);
+			book = response.getBody().getVolumeInfo();
+		}
 		
-		ResponseEntity<ItemDto> response = restTemplate.exchange(url, HttpMethod.GET, 
-				entity, ItemDto.class);
-		
-		BookDto book = response.getBody().getVolumeInfo();
 		ImageLinksDto imageLinks = book.getImageLinks();
 		
 		HttpHeaders headersResponse = new HttpHeaders();

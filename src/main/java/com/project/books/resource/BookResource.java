@@ -150,13 +150,15 @@ public class BookResource {
 			book = response.getBody().getVolumeInfo();
 		}
 		
-		String description = book.getDescription().replaceAll("<br>", "\n");
+		String description = book.getDescription();
+		if (description != null) description.replaceAll("<br>", "\n");
 		
 		HttpHeaders headersResponse = new HttpHeaders();
 		headersResponse.setContentType(MediaType.TEXT_PLAIN);
 		headersResponse.add("content-disposition", "attachment; filename=" + 
 				book.getTitle().replaceAll("\\s+", "_").concat(".txt"));
-		return new ResponseEntity<>(description.getBytes(), headersResponse, HttpStatus.OK);
+		return new ResponseEntity<>(description == null ? null : description.getBytes(), 
+				headersResponse, HttpStatus.OK);
 	}
 	
 	/**
@@ -193,12 +195,16 @@ public class BookResource {
 		headersResponse.add("content-disposition", "attachment; filename=" + 
 				book.getTitle().replaceAll("\\s+", "_").concat(".jpeg"));
 		
-		URL imageUrl = new URL(imageLinks.getThumbnail().replace("http", "https"));
-		BufferedImage image = ImageIO.read(imageUrl);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ImageIO.write(image, "jpg", baos);
-		baos.close();
+		if (imageLinks != null && imageLinks.getThumbnail() != null) {
+			URL imageUrl = new URL(imageLinks.getThumbnail().replace("http", "https"));
+			BufferedImage image = ImageIO.read(imageUrl);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ImageIO.write(image, "jpg", baos);
+			baos.close();
+			
+			return new ResponseEntity<>(baos.toByteArray(), headersResponse, HttpStatus.OK);
+		}
 		
-		return new ResponseEntity<>(baos.toByteArray(), headersResponse, HttpStatus.OK);
+		return new ResponseEntity<>(null, headersResponse, HttpStatus.OK);
 	}
 }

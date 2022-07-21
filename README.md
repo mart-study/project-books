@@ -18,6 +18,6 @@ Technology used:
 - Spring Boot
 - Maven
 - Rest API
-- Rest Template
+- Rest Template -> (changed to) Spring Cloud OpenFeign
 - JUnit and Mockito
 - MongoDB

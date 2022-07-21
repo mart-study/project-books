@@ -13,9 +13,7 @@ import javax.imageio.ImageIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +21,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 import com.project.books.dto.BookDto;
 import com.project.books.dto.ImageLinksDto;
@@ -37,9 +34,6 @@ import com.project.books.service.BookService;
 public class BookResource {
 	
 	private Logger logger = LoggerFactory.getLogger(BookResource.class);
-	
-	@Autowired
-	private RestTemplate restTemplate;
 	
 	@Autowired
 	private GoogleBookProperties properties;
@@ -91,17 +85,8 @@ public class BookResource {
 			logger.info("Get book by id from database: " + id);
 			return new ResponseEntity<>(bookOpt.get(), HttpStatus.OK);
 		} else {
-			String url = properties.getBaseUrl().concat("/").concat(id);
-			HttpHeaders headers = new HttpHeaders();
-			headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-			
-			HttpEntity<String> entity = new HttpEntity<>(headers);
-			
-			ResponseEntity<ItemDto> response = restTemplate.exchange(url, HttpMethod.GET, 
-					entity, ItemDto.class);
-			
+			ResponseEntity<ItemDto> response = googleBooksPlaceHolderClient.getBookById(id);
 			bookOpt = bookService.saveBook(response.getBody());
-			
 			logger.info("Get book by id from google apis: " + id);
 			return new ResponseEntity<>(bookOpt.get(), HttpStatus.OK);
 		}
@@ -121,14 +106,7 @@ public class BookResource {
 			logger.info("Get book's description from database: " + id);
 			book = bookOpt.get();
 		} else {
-			String url = properties.getBaseUrl().concat("/").concat(id);
-			HttpHeaders headers = new HttpHeaders();
-			headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-			
-			HttpEntity<String> entity = new HttpEntity<>(headers);
-			
-			ResponseEntity<ItemDto> response = restTemplate.exchange(url, HttpMethod.GET, 
-					entity, ItemDto.class);
+			ResponseEntity<ItemDto> response = googleBooksPlaceHolderClient.getBookById(id);
 			
 			logger.info("Get book's description from google apis: " + id);
 			book = response.getBody().getVolumeInfo();
@@ -159,14 +137,7 @@ public class BookResource {
 			logger.info("Get book's thumbnail link from database: " + id);
 			book = bookOpt.get();
 		} else {
-			String url = properties.getBaseUrl().concat("/").concat(id);
-			HttpHeaders headers = new HttpHeaders();
-			headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-			
-			HttpEntity<String> entity = new HttpEntity<>(headers);
-			
-			ResponseEntity<ItemDto> response = restTemplate.exchange(url, HttpMethod.GET, 
-					entity, ItemDto.class);
+			ResponseEntity<ItemDto> response = googleBooksPlaceHolderClient.getBookById(id);
 		
 			logger.info("Get book's thumbnail from google apis: " + id);
 			book = response.getBody().getVolumeInfo();

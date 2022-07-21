@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,7 +24,9 @@ import com.project.books.dto.BookDto;
 import com.project.books.dto.ItemDto;
 import com.project.books.model.Book;
 import com.project.books.model.Item;
+import com.project.books.model.KeySearch;
 import com.project.books.repository.BookRepository;
+import com.project.books.repository.KeySearchRepository;
 import com.project.books.service.impl.BookServiceImpl;
 
 @ExtendWith(SpringExtension.class)
@@ -33,12 +36,16 @@ public class BookServiceTest {
 	private ModelMapper modelMapper;
 	
 	@Mock
-	private BookRepository bookRepository  = mock(BookRepository.class);;
+	private BookRepository bookRepository  = mock(BookRepository.class);
+	
+	@Mock
+	private KeySearchRepository keySearchRepository  = mock(KeySearchRepository.class);
 	
 	@InjectMocks
 	private BookServiceImpl bookService;
 	
 	@Test
+	@DisplayName("Test save book, expeceted success")
 	public void saveBook_success() {
 		List<String> authors = new ArrayList<String>();
 		authors.add("Aoyama Gosho");
@@ -62,6 +69,7 @@ public class BookServiceTest {
 	}
 	
 	@Test
+	@DisplayName("Test get book by id, expeceted success")
 	public void getBookById_success() {
 		List<String> authors = new ArrayList<String>();
 		authors.add("Daniel Keyes");
@@ -81,5 +89,16 @@ public class BookServiceTest {
 		Optional<BookDto> bookDto = bookService.getBookById("MPa_DwAAQBAJ");
 		assertEquals(bookDto.get().getTitle(), book.getTitle());
         verify(bookRepository, times(1)).findById("MPa_DwAAQBAJ");
+	}
+	
+	@Test
+	@DisplayName("Test save key search, expeceted success")
+	public void saveKeySearch_success() {
+		KeySearch keySearch = new KeySearch("Shine", "Jessica");
+		when(keySearchRepository.save(any())).thenReturn(keySearch);
+		
+		bookService.saveKeysearch(keySearch);
+		verify(keySearchRepository, times(1)).save(keySearch);
+		
 	}
 }

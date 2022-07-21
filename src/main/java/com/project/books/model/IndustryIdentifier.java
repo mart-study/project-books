@@ -22,6 +22,4 @@ public class IndustryIdentifier {
 	public String toString() {
 		return "IndustryIdentifier [type=" + type + ", identifier=" + identifier + "]";
 	}
-	
-	
 }

@@ -25,8 +25,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.books.dto.BookDto;
 import com.project.books.dto.ImageLinksDto;
 import com.project.books.dto.ItemDto;
+import com.project.books.dto.KeySearchDto;
 import com.project.books.dto.SearchBookResponseDto;
 import com.project.books.dto.SearchBookResultDto;
+import com.project.books.model.KeySearch;
 import com.project.books.properties.GoogleBookProperties;
 import com.project.books.service.BookService;
 
@@ -68,8 +70,13 @@ public class BookResource {
 			dto.setPublishedDate(item.getVolumeInfo().getPublishedDate());
 			result.add(dto);
 		});
-		
 		logger.info("Search books with title: " + title + " and author: " + author);
+		
+		// save key search
+		KeySearch keySearch = new KeySearch(title, author);
+		bookService.saveKeysearch(keySearch);
+		logger.info("Save key search books with title: " + title + " and author: " + author);
+		
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 	
@@ -161,5 +168,13 @@ public class BookResource {
 		}
 		
 		return new ResponseEntity<>(null, headersResponse, HttpStatus.OK);
+	}
+	
+	@GetMapping("/latest-search")
+	public ResponseEntity<List<KeySearchDto>> getLatestKeySearch() {
+		List<KeySearchDto> keySearchList = bookService.getLatestKeySearch();
+		logger.info("Get latest key search");
+		
+		return new ResponseEntity<>(keySearchList, HttpStatus.OK); 
 	}
 }

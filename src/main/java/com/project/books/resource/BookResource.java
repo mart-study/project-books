@@ -5,9 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.imageio.ImageIO;
@@ -26,7 +24,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.project.books.dto.BookDto;
 import com.project.books.dto.ImageLinksDto;
@@ -50,6 +47,9 @@ public class BookResource {
 	@Autowired
 	private BookService bookService;
 	
+	@Autowired
+	private com.project.books.client.GoogleBooksPlaceHolderClient googleBooksPlaceHolderClient;
+	
 	/**
 	 * Search book by title and/or author name
 	 * @param title
@@ -59,26 +59,10 @@ public class BookResource {
 	@GetMapping("/search")
 	public ResponseEntity<List<SearchBookResponseDto>> searchBook(@RequestParam(value = "title", required=true) String title, 
 			@RequestParam(value = "author", required=false) String author) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 		
-		HttpEntity<String> entity = new HttpEntity<>(headers);
-		
-		String url = UriComponentsBuilder.fromHttpUrl(properties.getBaseUrl())
-				.queryParam("q", "{qWord}")
-				.queryParam("maxResults", "{maxResults}")
-				.queryParam("orderBy", "{orderBy}")
-				.queryParam("key", "{key}")
-				.encode().toUriString();
-		
-		Map<String, Object> params = new HashMap<>();
-		params.put("qWord", title.concat("+inauthor:").concat(author));
-		params.put("maxResults", 5);
-		params.put("orderBy", "newest");
-		params.put("key", properties.getApiKey());
-		
-		ResponseEntity<SearchBookResultDto> response = restTemplate.exchange(url, HttpMethod.GET, 
-				entity, SearchBookResultDto.class, params);
+		ResponseEntity<SearchBookResultDto> response = 
+				googleBooksPlaceHolderClient.searchBookByTitleAndAuthor(title.concat("+inauthor:").concat(author),
+						5, "newest", properties.getApiKey());
 		
 		List<SearchBookResponseDto> result = new ArrayList<>();
 		response.getBody().getItems().stream().forEach(item -> {

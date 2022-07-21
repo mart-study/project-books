@@ -1,7 +1,6 @@
 package com.project.books.dto;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 public class BookDto implements Serializable {
@@ -10,7 +9,7 @@ public class BookDto implements Serializable {
 	private String title;
 	private List<String> authors;
 	private String publisher;
-	private Date publishedDate;
+	private String publishedDate;
 	private String description;
 	private List<IndustryIdentifierDto> industryIdentifiers;
 	private int pageCount;
@@ -39,11 +38,10 @@ public class BookDto implements Serializable {
 	public void setPublisher(String publisher) {
 		this.publisher = publisher;
 	}
-	
-	public Date getPublishedDate() {
+	public String getPublishedDate() {
 		return publishedDate;
 	}
-	public void setPublishedDate(Date publishedDate) {
+	public void setPublishedDate(String publishedDate) {
 		this.publishedDate = publishedDate;
 	}
 	public String getDescription() {

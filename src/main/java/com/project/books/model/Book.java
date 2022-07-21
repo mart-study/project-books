@@ -1,6 +1,5 @@
 package com.project.books.model;
 
-import java.util.Date;
 import java.util.List;
 
 public class Book {
@@ -8,7 +7,7 @@ public class Book {
 	private String title;
 	private List<String> authors;
 	private String publisher;
-	private Date publishedDate;
+	private String publishedDate;
 	private String description;
 	private List<IndustryIdentifier> industryIdentifiers;
 	private int pageCount;
@@ -37,10 +36,10 @@ public class Book {
 	public void setPublisher(String publisher) {
 		this.publisher = publisher;
 	}
-	public Date getPublishedDate() {
+	public String getPublishedDate() {
 		return publishedDate;
 	}
-	public void setPublishedDate(Date publishedDate) {
+	public void setPublishedDate(String publishedDate) {
 		this.publishedDate = publishedDate;
 	}
 	public String getDescription() {
